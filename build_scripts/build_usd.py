@@ -642,7 +642,14 @@ def InstallTBB_Windows(context, force, buildArgs):
 
 def InstallTBB_LinuxOrMacOS(context, force, buildArgs):
     with CurrentWorkingDirectory(DownloadURL(TBB_URL, context, force)):
+        # Note: TBB installation fails when cuda is installed, a suggested fix: 
+        # https://github.com/spack/spack/issues/6000#issuecomment-358817701
         # TBB does not support out-of-source builds in a custom location.
+        osxbuildfile = "build/macos.inc"
+        with open(osxbuildfile) as f:
+            s = f.read().replace("shell clang -v ", "shell clang --version ")
+        with open(osxbuildfile, 'w') as f:
+            f.write(s)
         Run('make -j{procs} {buildArgs}'
             .format(procs=context.numJobs, 
                     buildArgs=" ".join(buildArgs)))
