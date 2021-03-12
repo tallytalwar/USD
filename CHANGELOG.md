@@ -10,8 +10,8 @@
 - GLEW is no longer required for building imaging components.
 
 - Various fixes and changes to build_usd.py:
-  - Fixed command-line args not being respected for OpenVDB. (PR: https://github.com/PixarAnimationStudios/USD/pull/1406)
-  - Updated boost to 1.70 on macOS for both Python 2 and 3. (Issue: https://github.com/PixarAnimationStudios/USD/issues/1369)
+  - Fixed command-line args not being respected for OpenVDB. (PR: https://github.com/PixarAnimationStudios/USD/pull/1406) PR: [https://github.com/PixarAnimationStudios/USD/pull/1406|#1406]
+  - Updated boost to 1.70 on macOS for both Python 2 and 3. (Issue: https://github.com/PixarAnimationStudios/USD/issues/1369) [https://github.com/PixarAnimationStudios/USD/issues/1369|#1369]
   - Updated MaterialX to 1.37.3 with shared libraries on Linux.
 
 - Fixed various linking issues with OpenEXR. (PR #1398)
