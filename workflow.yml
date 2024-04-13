@@ -5,6 +5,7 @@ on:
     branches:
       - release
       - dev
+      - varun/github-workflow
 
 jobs:
   Linux:
