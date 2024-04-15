@@ -221,7 +221,7 @@ stages:
       displayName: "Creating packaging directory"
     - bash: |
         cd ./packaging
-        $(PYTHON_INTERPRETER) setup.py $(post_release_tag_arg) bdist_wheel --python-tag ${PYTHON_TAG} --plat-name macosx_10_9_universal2
+        $(PYTHON_INTERPRETER) setup.py $(post_release_tag_arg) bdist_wheel --python-tag ${PYTHON_TAG} --plat-name macosx_11_0_universal2
       displayName: 'Running setup.py'
     - bash: |
         delocate-wheel -v -w dist-delocated packaging/dist/*
