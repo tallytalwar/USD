@@ -40,6 +40,9 @@ jobs:
           - TAG: cp311
             INTERPRETER: /opt/python/cp311-cp311/bin/python
             VERSION_SPEC: '3.11'
+          - TAG: cp312
+            INTERPRETER: /opt/python/cp312-cp312/bin/python
+            VERSION_SPEC: '3.12'
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
@@ -131,6 +134,7 @@ jobs:
       - name: Install dependencies
         run: |
           ${{ matrix.PYTHON.INTERPRETER }} -m pip install --upgrade pip
+          ${{ matrix.PYTHON.INTERPRETER }} -m pip install setuptools
           ${{ matrix.PYTHON.INTERPRETER }} -m pip install delocate~=0.10.2 wheel
       - name: Build USD
         run: |
