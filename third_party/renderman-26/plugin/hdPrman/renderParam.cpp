@@ -20,6 +20,7 @@
 #include "hdPrman/renderViewContext.h"
 #include "hdPrman/rixStrings.h"
 #include "hdPrman/utils.h"
+#include "hdPrman/tokens.h"
 
 #include "pxr/imaging/hd/aov.h"
 #include "pxr/imaging/hd/enums.h"
@@ -4805,6 +4806,41 @@ bool
 HdPrman_RenderParam::IsInteractive() const
 {
     return _renderDelegate->IsInteractive();
+}
+
+bool
+HdPrman_RenderParam::HasArbitraryValue(const TfToken& key) const
+{
+    // Currenly, we only support the sceneStateId as an arbitrary value.
+    return (key == HdPrmanRenderParamTokens->sceneStateId);
+}
+
+VtValue
+HdPrman_RenderParam::GetArbitraryValue(const TfToken& key) const
+{
+    // Currenly, we only support the sceneStateId as an arbitrary value.
+    if (key == HdPrmanRenderParamTokens->sceneStateId) {
+        return VtValue(_sceneStateId.load());
+    }
+
+    return VtValue();
+}
+
+bool
+HdPrman_RenderParam::SetArbitraryValue(const TfToken& key, const VtValue& value)
+{
+    // Currenly, we only support the sceneStateId as an arbitrary value.
+    if (key == HdPrmanRenderParamTokens->sceneStateId) {
+        if (value.IsHolding<int>()) {
+            _sceneStateId.store(value.Get<int>());
+            return true;
+        }
+
+        TF_WARN("Invalid type for 'sceneStateId' value (int expected) : %s",
+                value.GetTypeName().c_str());
+    }
+
+    return false;
 }
 
 static const float*

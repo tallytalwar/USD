@@ -13,6 +13,7 @@
 #include "hdPrman/renderBuffer.h"
 #include "hdPrman/renderDelegate.h"
 #include "hdPrman/renderParam.h"
+#include "hdPrman/tokens.h"
 #if PXR_VERSION >= 2308
 #include "hdPrman/renderSettings.h"
 #endif
@@ -22,6 +23,7 @@
 #include "pxr/imaging/hd/perfLog.h"
 #include "pxr/imaging/hd/renderPassState.h"
 #include "pxr/imaging/hd/rprim.h"
+#include "pxr/imaging/hd/sceneGlobalsSchema.h"
 #if PXR_VERSION >= 2308
 #include "pxr/imaging/hd/utils.h"
 #endif
@@ -338,6 +340,20 @@ _ComputeCameraFramingFromSettings(
         renderPassState->GetCamera(), framing,
         std::pair<bool, CameraUtilConformWindowPolicy>(true, conformPolicy));
 #endif
+}
+
+int
+_GetSceneStateId(const HdRenderIndex * const renderIndex)
+{
+    // Collect the scene state id from the render index.
+    if (const auto terminal = renderIndex->GetTerminalSceneIndex()) {
+        const auto globals = HdSceneGlobalsSchema::GetFromSceneIndex(terminal);
+        if (const auto idDs = globals.GetSceneStateId()) {
+            return idDs->GetTypedValue(0.0);
+        }
+    }
+
+    return 0;
 }
 
 } // end anonymous namespace
@@ -745,6 +761,17 @@ HdPrman_RenderPass::_Execute(
 #endif
         }
     }
+
+    // Update the render param arbirary value for the scene state id.
+    // This value is extracted from the terminal scene index right before 
+    // before restarting the render. Setting this at this point allows
+    // clients to be aware when the rendering of a specific scene state
+    // is about to begin. This could also be directly accessed via the
+    // render index global settings as soon as it is available ther, but
+    // that can be a bit too early for some cases.
+    _renderParam->SetArbitraryValue(
+        HdPrmanRenderParamTokens->sceneStateId,
+        VtValue(_GetSceneStateId(GetRenderIndex())));
 
     if (isInteractive) {
         // This path uses the render thread to start the render.

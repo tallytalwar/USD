@@ -417,6 +417,11 @@ public:
     // batched/offline mode).
     bool IsInteractive() const;
 
+    /// HdRenderParam overrides.
+    bool HasArbitraryValue(const TfToken& key) const override;
+    VtValue GetArbitraryValue(const TfToken& key) const override;
+    bool SetArbitraryValue(const TfToken& key, const VtValue& value) override;
+
 private:
     void _CreateStatsSession();
     void _CreateRiley(const std::string &rileyVariant,
@@ -643,6 +648,9 @@ private:
     bool _qnCheapPass;
     int _qnMinSamples;
     int _qnInterval;
+
+    // Scene state Id.
+    std::atomic<int> _sceneStateId = 0;
 };
 
 /// Convert Hydra points to Riley point primvar.

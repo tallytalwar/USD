@@ -1349,6 +1349,7 @@
             ('startTimeCode', T_DOUBLE, {}),
             ('endTimeCode', T_DOUBLE, {}),
             ('currentFrame', T_DOUBLE, {}),
+            ('sceneStateId', T_INT, {}),
         ],
     ),
 
