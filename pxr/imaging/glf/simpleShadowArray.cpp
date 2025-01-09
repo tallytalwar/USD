@@ -86,8 +86,6 @@ GlfSimpleShadowArray::SetShadowMapResolutions(
         _viewMatrix.resize(numShadowMaps, GfMatrix4d().SetIdentity());
         _projectionMatrix.resize(numShadowMaps, GfMatrix4d().SetIdentity());
     }
-
-    _texturesAllocatedExternally = false;
 }
 
 size_t
