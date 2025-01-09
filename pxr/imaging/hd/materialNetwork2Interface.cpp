@@ -242,6 +242,15 @@ HdMaterialNetwork2Interface::SetNodeType(
 }
 
 void
+HdMaterialNetwork2Interface::SetNodeTypeInfoValue(
+    const TfToken &nodeName,
+    const TfToken &key,
+    const VtValue &value)
+{
+    // no-op
+}
+
+void
 HdMaterialNetwork2Interface::SetNodeParameterValue(
     const TfToken &nodeName,
     const TfToken &paramName,
