@@ -4710,6 +4710,8 @@ pxr_register_test(testUsdImagingGLInvalidMaterial
     PERCEPTUAL
     EXPECTED_RETURN_CODE 0
     TESTENV testUsdImagingGLInvalidMaterial
+    ENV
+        HDST_ENABLE_BROKEN_SHADER_VISUAL_FEEDBACK=1
 )
 
 pxr_register_test(testUsdImagingGLDomeLightTaskController
