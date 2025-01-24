@@ -1239,8 +1239,8 @@ _ToMaterialNetworkMap(
         netSchema.GetTerminals();
     const TfTokenVector names = terminalsSchema.GetNames();
 
-    auto config = HdSampledDataSourceContainerSchema(netSchema.GetConfig());
-    if (config) {
+    if (const HdSampledDataSourceContainerSchema config =
+                                                netSchema.GetConfig()) {
         matHd.config = _ToDictionary(config);
     }
 
