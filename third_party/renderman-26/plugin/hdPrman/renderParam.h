@@ -417,10 +417,12 @@ public:
     // batched/offline mode).
     bool IsInteractive() const;
 
+#if HD_API_VERSION >= 76
     /// HdRenderParam overrides.
     bool HasArbitraryValue(const TfToken& key) const override;
     VtValue GetArbitraryValue(const TfToken& key) const override;
     bool SetArbitraryValue(const TfToken& key, const VtValue& value) override;
+#endif
 
 private:
     void _CreateStatsSession();
@@ -686,9 +688,9 @@ HdPrman_ConvertPrimvars(
     const GfVec2d &shutterInterval,
     float time = 0.f);
 
-// In 2302 and beyond, we can use
+// In 2311 and beyond, we can use
 // HdPrman_PreviewSurfacePrimvarsSceneIndexPlugin.
-#if PXR_VERSION < 2302
+#if PXR_VERSION < 2311
 
 /// Check for any primvar opinions on the material that should be Riley primvars.
 void
@@ -697,7 +699,7 @@ HdPrman_TransferMaterialPrimvarOpinions(
     SdfPath const& hdMaterialId,
     RtPrimVarList& primvars);
 
-#endif // PXR_VERSION >= 2302
+#endif // PXR_VERSION >= 2311
 
 
 /// Resolve Hd material ID to the corresponding Riley material & displacement

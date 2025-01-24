@@ -23,7 +23,9 @@
 #include "pxr/imaging/hd/perfLog.h"
 #include "pxr/imaging/hd/renderPassState.h"
 #include "pxr/imaging/hd/rprim.h"
+#if HD_API_VERSION >= 76
 #include "pxr/imaging/hd/sceneGlobalsSchema.h"
+#endif
 #if PXR_VERSION >= 2308
 #include "pxr/imaging/hd/utils.h"
 #endif
@@ -342,6 +344,7 @@ _ComputeCameraFramingFromSettings(
 #endif
 }
 
+#if HD_API_VERSION >= 76
 int
 _GetSceneStateId(const HdRenderIndex * const renderIndex)
 {
@@ -355,6 +358,7 @@ _GetSceneStateId(const HdRenderIndex * const renderIndex)
 
     return 0;
 }
+#endif
 
 } // end anonymous namespace
 
@@ -762,6 +766,7 @@ HdPrman_RenderPass::_Execute(
         }
     }
 
+#if HD_API_VERSION >= 76
     // Update the render param arbirary value for the scene state id.
     // This value is extracted from the terminal scene index right before 
     // before restarting the render. Setting this at this point allows
@@ -772,6 +777,7 @@ HdPrman_RenderPass::_Execute(
     _renderParam->SetArbitraryValue(
         HdPrmanRenderParamTokens->sceneStateId,
         VtValue(_GetSceneStateId(GetRenderIndex())));
+#endif
 
     if (isInteractive) {
         // This path uses the render thread to start the render.

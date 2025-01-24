@@ -878,9 +878,9 @@ HdPrman_ConvertPrimvars(HdSceneDelegate *sceneDelegate, SdfPath const& id,
     }
 }
 
-// In 2302 and beyond, we can use
+// In 2311 and beyond, we can use
 // HdPrman_PreviewSurfacePrimvarsSceneIndexPlugin.
-#if PXR_VERSION < 2302
+#if PXR_VERSION < 2311
 
 void
 HdPrman_TransferMaterialPrimvarOpinions(HdSceneDelegate *sceneDelegate,
@@ -915,7 +915,7 @@ HdPrman_TransferMaterialPrimvarOpinions(HdSceneDelegate *sceneDelegate,
     }
 }
 
-#endif // PXR_VERSION >= 2302
+#endif // PXR_VERSION >= 2311
 
 RtParamList
 HdPrman_RenderParam::ConvertAttributes(HdSceneDelegate *sceneDelegate,
@@ -4808,6 +4808,7 @@ HdPrman_RenderParam::IsInteractive() const
     return _renderDelegate->IsInteractive();
 }
 
+#if HD_API_VERSION >=76
 bool
 HdPrman_RenderParam::HasArbitraryValue(const TfToken& key) const
 {
@@ -4842,6 +4843,7 @@ HdPrman_RenderParam::SetArbitraryValue(const TfToken& key, const VtValue& value)
 
     return false;
 }
+#endif
 
 static const float*
 _GetShutterParam(const RtParamList &params)
