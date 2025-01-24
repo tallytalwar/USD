@@ -1,27 +1,32 @@
 //
-// Copyright 2018 Pixar
+// Copyright 2025 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
 
-#ifndef PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
-#define PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
+#ifndef PXR_USD_SDR_NODE_DISCOVERY_RESULT_H
+#define PXR_USD_SDR_NODE_DISCOVERY_RESULT_H
 
-#include "pxr/usd/ndr/declare.h"
+/// \file sdr/shaderNodeDiscoveryResult.h
+///
+/// \note
+/// All Ndr objects are deprecated in favor of the corresponding Sdr objects
+/// in this file. All existing pxr/usd/ndr implementations will be moved to
+/// pxr/usd/sdr.
+
+#include "pxr/usd/sdr/declare.h"
+#include "pxr/usd/ndr/nodeDiscoveryResult.h"
 
 PXR_NAMESPACE_OPEN_SCOPE
 
 /// Represents the raw data of a node, and some other bits of metadata, that
-/// were determined via a `NdrDiscoveryPlugin`.
-///
-/// \deprecated
-/// Deprecated in favor of SdrShaderNodeDiscoveryResult
-struct NdrNodeDiscoveryResult {
+/// were determined via a `SdrDiscoveryPlugin`.
+struct SdrShaderNodeDiscoveryResult {
     /// Constructor.
-    NdrNodeDiscoveryResult(
-        const NdrIdentifier& identifier,
-        const NdrVersion& version,
+    SdrShaderNodeDiscoveryResult(
+        const SdrIdentifier& identifier,
+        const SdrVersion& version,
         const std::string& name,
         const TfToken& family,
         const TfToken& discoveryType,
@@ -29,7 +34,7 @@ struct NdrNodeDiscoveryResult {
         const std::string& uri,
         const std::string& resolvedUri,
         const std::string &sourceCode=std::string(),
-        const NdrTokenMap &metadata=NdrTokenMap(),
+        const SdrTokenMap &metadata=SdrTokenMap(),
         const std::string& blindData=std::string(),
         const TfToken& subIdentifier=TfToken()
     ) : identifier(identifier),
@@ -52,12 +57,12 @@ struct NdrNodeDiscoveryResult {
     /// name of the file or resource that this node originated from.
     /// E.g. "mix_float_2_1".  The identifier must be unique for a
     /// given sourceType.
-    NdrIdentifier identifier;
+    SdrIdentifier identifier;
 
     /// The node's version.  This may or may not be embedded in the
     /// identifier, it's up to implementations.  E.g a node with
     /// identifier "mix_float_2_1" might have version 2.1.
-    NdrVersion version;
+    SdrVersion version;
 
     /// The node's name.
     ///
@@ -78,15 +83,15 @@ struct NdrNodeDiscoveryResult {
     ///
     /// The type could be the file extension, or some other type of metadata
     /// that can signify a type prior to parsing. See the documentation for
-    /// `NdrParserPlugin` and `NdrParserPlugin::DiscoveryTypes` for more
+    /// `SdrParserPlugin` and `SdrParserPlugin::DiscoveryTypes` for more
     /// information on how this value is used.
     TfToken discoveryType;
 
     /// The node's source type.
     ///
     /// This type is unique to the parsing plugin
-    /// (`NdrParserPlugin::SourceType`), and determines the source of the node.
-    /// See `NdrNode::GetSourceType()` for more information.
+    /// (`SdrParserPlugin::SourceType`), and determines the source of the node.
+    /// See `SdrShaderNode::GetSourceType()` for more information.
     TfToken sourceType;
 
     /// The node's origin.
@@ -115,7 +120,7 @@ struct NdrNodeDiscoveryResult {
     /// pointed to by resolvedUri or in sourceCode (if resolvedUri is empty).
     /// In general, parsers should override this data with metadata from the 
     /// shader source. 
-    NdrTokenMap metadata;
+    SdrTokenMap metadata;
 
     /// An optional detail for the parser plugin.  The parser plugin
     /// defines the meaning of this data so the discovery plugin must
@@ -124,16 +129,64 @@ struct NdrNodeDiscoveryResult {
 
     /// The subIdentifier is associated with a particular asset and refers to a
     /// specific definition within the asset.  The asset is the one referred to
-    /// by `NdrRegistry::GetNodeFromAsset()`.  The subIdentifier is not needed
+    /// by `SdrRegistry::GetNodeFromAsset()`.  The subIdentifier is not needed
     /// for all cases where the node definition is not associated with an asset.
     /// Even if the node definition is associated with an asset, the
     /// subIdentifier is only needed if the asset specifies multiple definitions
     /// rather than a single definition.
     TfToken subIdentifier;
+
+    /// Helper function to translate SdrShaderNodeDiscoveryResult to
+    /// NdrNodeDiscoveryResult values.
+    ///
+    /// \deprecated
+    /// This function is deprecated and will be removed with the removal of
+    /// the Ndr library.
+    NdrNodeDiscoveryResult ToNdrNodeDiscoveryResult() const {
+        return NdrNodeDiscoveryResult(
+            identifier,
+            SdrToNdrVersion(version),
+            name,
+            family,
+            discoveryType,
+            sourceType,
+            uri,
+            resolvedUri,
+            sourceCode,
+            metadata,
+            blindData,
+            subIdentifier
+        );
+    }
+
+    /// Helper function to translate NdrNodeDiscoveryResult to
+    /// SdrShaderNodeDiscoveryResult values.
+    ///
+    /// \deprecated
+    /// This function is deprecated and will be removed with the removal of
+    /// the Ndr library.
+    static SdrShaderNodeDiscoveryResult FromNdrNodeDiscoveryResult(
+        const NdrNodeDiscoveryResult& result
+    ) {
+        return SdrShaderNodeDiscoveryResult(
+            result.identifier,
+            NdrToSdrVersion(result.version),
+            result.name,
+            result.family,
+            result.discoveryType,
+            result.sourceType,
+            result.uri,
+            result.resolvedUri,
+            result.sourceCode,
+            result.metadata,
+            result.blindData,
+            result.subIdentifier
+        );
+    }
 };
 
-typedef std::vector<NdrNodeDiscoveryResult> NdrNodeDiscoveryResultVec;
+typedef std::vector<SdrShaderNodeDiscoveryResult> SdrShaderNodeDiscoveryResultVec;
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
-#endif // PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
+#endif // PXR_USD_SDR_NODE_DISCOVERY_RESULT_H

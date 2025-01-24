@@ -1,96 +1,91 @@
 //
-// Copyright 2018 Pixar
+// Copyright 2025 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
 
-#ifndef PXR_USD_NDR_FILESYSTEM_DISCOVERY_H
-#define PXR_USD_NDR_FILESYSTEM_DISCOVERY_H
+#ifndef PXR_USD_SDR_FILESYSTEM_DISCOVERY_H
+#define PXR_USD_SDR_FILESYSTEM_DISCOVERY_H
 
-/// \file ndr/filesystemDiscovery.h
+/// \file sdr/filesystemDiscovery.h
 ///
-/// \deprecated
+/// \note
 /// All Ndr objects are deprecated in favor of the corresponding Sdr objects
-/// in sdr/filesystemDiscovery.h
+/// in this file. All existing pxr/usd/ndr implementations will be moved to
+/// pxr/usd/sdr.
 
 #include "pxr/pxr.h"
-#include "pxr/usd/ndr/api.h"
-#include "pxr/usd/ndr/discoveryPlugin.h"
+#include "pxr/usd/ndr/filesystemDiscoveryHelpers.h"
+#include "pxr/usd/sdr/api.h"
+#include "pxr/usd/sdr/discoveryPlugin.h"
 #include <functional>
 
 PXR_NAMESPACE_OPEN_SCOPE
 
-TF_DECLARE_WEAK_AND_REF_PTRS(_NdrFilesystemDiscoveryPlugin);
+TF_DECLARE_WEAK_AND_REF_PTRS(_SdrFilesystemDiscoveryPlugin);
 
-/// \class _NdrFilesystemDiscoveryPlugin
+/// \class _SdrFilesystemDiscoveryPlugin
 ///
-/// Discovers nodes on the filesystem. The provided search paths are walked to
-/// find files that have certain extensions. If a file with a matching extension
-/// is found, it is turned into a `NdrNodeDiscoveryResult` and will be parsed
-/// into a node when its information is accessed.
+/// Discovers shader nodes on the filesystem. The provided search paths are
+/// walked to find files that have certain extensions. If a file with a
+/// matching extension is found, it is turned into a
+/// `SdrShaderNodeDiscoveryResult` and will be parsed into a node when its
+/// information is accessed.
 ///
 /// Parameters for this plugin are specified via environment variables (which
 /// must be set before the library is loaded):
 ///
-/// PXR_NDR_FS_PLUGIN_SEARCH_PATHS - The paths that should be searched,
+/// PXR_SDR_FS_PLUGIN_SEARCH_PATHS - The paths that should be searched,
 /// recursively, for files that represent nodes. Paths should be separated by 
 /// either a ':' or a ';' depending on your platform (it should mimic the PATH 
 /// env var on your platform).  See ARCH_PATH_LIST_SEP.
 ///
-/// PXR_NDR_FS_PLUGIN_ALLOWED_EXTS - The extensions on files that define nodes.
+/// PXR_SDR_FS_PLUGIN_ALLOWED_EXTS - The extensions on files that define nodes.
 /// Do not include the leading ".". Extensions should be separated by a colon.
 ///
-/// PXR_NDR_FS_PLUGIN_FOLLOW_SYMLINKS - Whether symlinks should be followed
+/// PXR_SDR_FS_PLUGIN_FOLLOW_SYMLINKS - Whether symlinks should be followed
 /// while walking the search paths. Set to "true" (case sensitive) if they
 /// should be followed.
-///
-/// \deprecated
-/// Deprecated in favor of _SdrFilesystemDiscoveryPlugin. 
-/// PXR_NDR_* environment variables will be moved to PXR_SDR_* environment
-/// variables
-class _NdrFilesystemDiscoveryPlugin final : public NdrDiscoveryPlugin
-{
+class _SdrFilesystemDiscoveryPlugin final : public SdrDiscoveryPlugin {
 public:
     /// A filter for discovered nodes.  If the function returns false
     /// then the discovered node is discarded.  Otherwise the function
     /// can modify the discovery result.
-    using Filter = std::function<bool(NdrNodeDiscoveryResult&)>;
+    using Filter = std::function<bool(SdrShaderNodeDiscoveryResult&)>;
 
     /// Constructor.
-    NDR_API
-    _NdrFilesystemDiscoveryPlugin();
+    SDR_API
+    _SdrFilesystemDiscoveryPlugin();
 
     /// DiscoverNodes() will pass each result to the given function for
     /// modification.  If the function returns false then the result is
     /// discarded.
-    NDR_API
-    _NdrFilesystemDiscoveryPlugin(Filter filter);
+    SDR_API
+    _SdrFilesystemDiscoveryPlugin(Filter filter);
 
     /// Destructor
-    NDR_API
-    ~_NdrFilesystemDiscoveryPlugin() {}
+    SDR_API
+    ~_SdrFilesystemDiscoveryPlugin() {}
 
     /// Discover all of the nodes that appear within the the search paths
     /// provided and match the extensions provided.
-    ///
-    /// \deprecated
-    /// Deprecated in favor of _SdrFilesystemDiscoveryPlugin::DiscoverShaderNodes
-    NDR_API
-    NdrNodeDiscoveryResultVec DiscoverNodes(const Context&) override;
+    SDR_API
+    SdrShaderNodeDiscoveryResultVec DiscoverShaderNodes(
+        const Context&) override;
 
     /// Gets the paths that this plugin is searching for nodes in.
-    NDR_API
-    const NdrStringVec& GetSearchURIs() const override { return _searchPaths; }
+    SDR_API
+    const SdrStringVec& GetSearchURIs() const override { return _searchPaths; }
 
 private:
     /// The paths (abs) indicating where the plugin should search for nodes.
-    NdrStringVec _searchPaths;
+    SdrStringVec _searchPaths;
 
     /// The extensions (excluding leading '.') that signify a valid node file.
     /// The extension will be used as the `type` member in the resulting
-    /// `NdrNodeDiscoveryResult` instance.
-    NdrStringVec _allowedExtensions;
+    /// `SdrShaderNodeDiscoveryResult` instance.
+    SdrStringVec _allowedExtensions;
 
     /// Whether or not to follow symlinks while scanning directories for files.
     bool _followSymlinks;
@@ -101,4 +96,4 @@ private:
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
-#endif // PXR_USD_NDR_FILESYSTEM_DISCOVERY_H
+#endif // PXR_USD_SDR_FILESYSTEM_DISCOVERY_H

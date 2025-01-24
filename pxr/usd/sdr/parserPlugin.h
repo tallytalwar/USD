@@ -1,51 +1,51 @@
 //
-// Copyright 2018 Pixar
+// Copyright 2025 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
 //
 
-#ifndef PXR_USD_NDR_PARSER_PLUGIN_H
-#define PXR_USD_NDR_PARSER_PLUGIN_H
+#ifndef PXR_USD_SDR_PARSER_PLUGIN_H
+#define PXR_USD_SDR_PARSER_PLUGIN_H
 
-/// \file ndr/parserPlugin.h
+/// \file sdr/parserPlugin.h
 ///
-/// \deprecated
+/// \note
 /// All Ndr objects are deprecated in favor of the corresponding Sdr objects
-/// in sdr/parserPlugin.h
+/// in this file. All existing pxr/usd/ndr implementations will be moved to
+/// pxr/usd/sdr.
 
 #include "pxr/pxr.h"
-#include "pxr/usd/ndr/api.h"
 #include "pxr/base/tf/type.h"
 #include "pxr/base/tf/weakBase.h"
 #include "pxr/base/tf/weakPtr.h"
-#include "pxr/usd/ndr/declare.h"
+#include "pxr/usd/sdr/api.h"
+#include "pxr/usd/sdr/declare.h"
+#include "pxr/usd/ndr/parserPlugin.h"
+#include "pxr/usd/sdr/shaderProperty.h"
 
 PXR_NAMESPACE_OPEN_SCOPE
 
 // Forward declarations
-struct NdrNodeDiscoveryResult;
+struct SdrShaderNodeDiscoveryResult;
 
 /// Register a parser plugin with the plugin system.
-///
-/// \deprecated
-/// Deprecated in favor of SDR_REGISTER_PARSER_PLUGIN
-#define NDR_REGISTER_PARSER_PLUGIN(ParserPluginClass)                   \
+#define SDR_REGISTER_PARSER_PLUGIN(ParserPluginClass)                   \
 TF_REGISTRY_FUNCTION(TfType)                                            \
 {                                                                       \
-    TfType::Define<ParserPluginClass, TfType::Bases<NdrParserPlugin>>() \
-        .SetFactory<NdrParserPluginFactory<ParserPluginClass>>();       \
+    TfType::Define<ParserPluginClass, TfType::Bases<SdrParserPlugin>>() \
+        .SetFactory<SdrParserPluginFactory<ParserPluginClass>>();       \
 }
 
-/// \class NdrParserPlugin
+/// \class SdrParserPlugin
 ///
 /// Interface for parser plugins.
 ///
-/// Parser plugins take a `NdrNodeDiscoveryResult` from the discovery process
-/// and creates a full `NdrNode` instance (or, in the case of a real-world
-/// scenario, a specialized node that derives from `NdrNode`). The parser that
+/// Parser plugins take a `SdrShaderNodeDiscoveryResult` from the discovery process
+/// and creates a full `SdrShaderNode` instance (or, in the case of a real-world
+/// scenario, a specialized node that derives from `SdrShaderNode`). The parser that
 /// is selected to run is ultimately decided by the registry, and depends on the
-/// `NdrNodeDiscoveryResult`'s `discoveryType` member. A parser plugin's
+/// `SdrShaderNodeDiscoveryResult`'s `discoveryType` member. A parser plugin's
 /// `GetDiscoveryTypes()` method is how this link is made. If a discovery result
 /// has a `discoveryType` of 'foo', and `SomeParserPlugin` has 'foo' included
 /// in its `GetDiscoveryTypes()` return value, `SomeParserPlugin` will parse
@@ -58,7 +58,7 @@ TF_REGISTRY_FUNCTION(TfType)                                            \
 /// discovery types 'foo', 'bar', and 'baz' (which are all related because they
 /// are all handled by the same parser), they may all be grouped under one
 /// unifying source type. This type is available on the node via
-/// `NdrNode::GetSourceType()`.
+/// `SdrShaderNode::GetSourceType()`.
 ///
 /// \section create How to Create a Parser Plugin
 /// There are three steps to creating a parser plugin:
@@ -66,7 +66,7 @@ TF_REGISTRY_FUNCTION(TfType)                                            \
 ///     <li>
 ///         Implement the parser plugin interface. An example parser plugin is
 ///         available in the plugin folder under `sdrOsl`. The `Parse()` method
-///         should return the specialized node that derives from `NdrNode` (and
+///         should return the specialized node that derives from `SdrShaderNode` (and
 ///         this node should also be constructed with its specialized
 ///         properties). Examples of a specialized node and property class are
 ///         `SdrShaderNode` and `SdrShaderProperty`.
@@ -75,7 +75,7 @@ TF_REGISTRY_FUNCTION(TfType)                                            \
 ///         Register your new plugin with the registry. The registration macro
 ///         must be called in your plugin's implementation file:
 ///         \code{.cpp}
-///         NDR_REGISTER_PARSER_PLUGIN(<YOUR_PARSER_PLUGIN_CLASS_NAME>)
+///         SDR_REGISTER_PARSER_PLUGIN(<YOUR_PARSER_PLUGIN_CLASS_NAME>)
 ///         \endcode
 ///         This macro is available in parserPlugin.h.
 ///     </li>
@@ -94,7 +94,7 @@ TF_REGISTRY_FUNCTION(TfType)                                            \
 ///                 "Info": {
 ///                     "Types": {
 ///                         "YOUR_CLASS_NAME" : {
-///                             "bases": ["NdrParserPlugin"],
+///                             "bases": ["SdrParserPlugin"],
 ///                             "displayName": "YOUR_DISPLAY_NAME"
 ///                         }
 ///                     }
@@ -112,16 +112,13 @@ TF_REGISTRY_FUNCTION(TfType)                                            \
 ///         the documentation for the `plug` library (in pxr/base).
 ///     </li>
 /// </ul>
-///
-/// \deprecated
-/// Deprecated in favor of SdrParserPlugin
-class NdrParserPlugin : public TfWeakBase
+class SdrParserPlugin : public NdrParserPlugin
 {
 public:
-    NDR_API
-    NdrParserPlugin();
-    NDR_API
-    virtual ~NdrParserPlugin();
+    SDR_API
+    SdrParserPlugin();
+    SDR_API
+    virtual ~SdrParserPlugin();
 
     /// Takes the specified `NdrNodeDiscoveryResult` instance, which was a
     /// result of the discovery process, and generates a new `NdrNode`.
@@ -129,64 +126,34 @@ public:
     ///
     /// \deprecated
     /// Deprecated in favor of SdrParserPlugin::ParseShaderNode
-    NDR_API
-    virtual NdrNodeUniquePtr Parse(
-        const NdrNodeDiscoveryResult& discoveryResult) = 0;
+    SDR_API
+    NdrNodeUniquePtr Parse(
+        const NdrNodeDiscoveryResult& discoveryResult) override;
 
-    /// Returns the types of nodes that this plugin can parse.
-    ///
-    /// "Type" here is the discovery type (in the case of files, this will
-    /// probably be the file extension, but in other systems will be data that
-    /// can be determined during discovery). This type should only be used to
-    /// match up a `NdrNodeDiscoveryResult` to its parser plugin; this value is
-    /// not exposed in the node's API.
-    NDR_API
-    virtual const NdrTokenVec& GetDiscoveryTypes() const = 0;
-
-    /// Returns the source type that this parser operates on.
-    ///
-    /// A source type is the most general type for a node. The parser plugin is
-    /// responsible for parsing all discovery results that have the types
-    /// declared under `GetDiscoveryTypes()`, and those types are collectively
-    /// identified as one "source type".
-    NDR_API
-    virtual const TfToken& GetSourceType() const = 0;
+    /// Takes the specified `SdrShaderNodeDiscoveryResult` instance, which was a
+    /// result of the discovery process, and generates a new `SdrShaderNode`.
+    /// The node's name, source type, and family must match.
+    SDR_API
+    virtual SdrShaderNodeUniquePtr ParseShaderNode(
+        const SdrShaderNodeDiscoveryResult& discoveryResult) = 0;
 
     /// Gets an invalid node based on the discovery result provided. An invalid
     /// node is a node that has no properties, but may have basic data found
     /// during discovery.
-    ///
-    /// \deprecated
-    /// Deprecated in favor of SdrParserPlugin::GetInvalidShaderNode
-    NDR_API
-    static NdrNodeUniquePtr GetInvalidNode(const NdrNodeDiscoveryResult& dr);
+    SDR_API
+    static SdrShaderNodeUniquePtr GetInvalidShaderNode(
+        const SdrShaderNodeDiscoveryResult& dr);
 };
-
 
 /// \cond
 /// Factory classes should be hidden from the documentation.
-///
-/// \deprecated
-/// Deprecated in favor of SdrParserPluginFactoryBase and
-/// SdrParserPluginFactoryBase
-class NdrParserPluginFactoryBase : public TfType::FactoryBase
-{
-public:
-    virtual NdrParserPlugin* New() const = 0;
-};
+using SdrParserPluginFactoryBase = NdrParserPluginFactoryBase;
 
-template <class T>
-class NdrParserPluginFactory : public NdrParserPluginFactoryBase
-{
-public:
-    virtual NdrParserPlugin* New() const
-    {
-        return new T;
-    }
-};
+template<class T>
+using SdrParserPluginFactory = NdrParserPluginFactory<T>;
 
 /// \endcond
 
 PXR_NAMESPACE_CLOSE_SCOPE
 
-#endif // PXR_USD_NDR_PARSER_PLUGIN_H
+#endif // PXR_USD_SDR_PARSER_PLUGIN_H
