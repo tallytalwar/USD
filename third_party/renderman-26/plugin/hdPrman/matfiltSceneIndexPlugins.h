@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Pixar
+// Copyright 2025 Pixar
 //
 // Licensed under the terms set forth in the LICENSE.txt file available at
 // https://openusd.org/license.
@@ -72,6 +72,26 @@ protected:
     HdSceneIndexBaseRefPtr _AppendSceneIndex(
         const HdSceneIndexBaseRefPtr &inputScene,
         const HdContainerDataSourceHandle &inputArgs) override;
+};
+
+/// ----------------------------------------------------------------------------
+/// \class HdPrman_NodeIdentifierResolvingSceneIndexPlugin
+///
+/// Plugin that provides an HdSiNodeIdentifierResolvingSceneIndex. This 
+/// finds shaders without nodeID's and attempts to resolve their identifier
+/// via UsdShade sourceAsset or sourceCode properties.
+///
+/// This plugin is registered with the scene index plugin registry for Prman.
+///
+class HdPrman_NodeIdentifierResolvingSceneIndexPlugin : public HdSceneIndexPlugin
+{
+public:
+    HdPrman_NodeIdentifierResolvingSceneIndexPlugin();
+
+protected: // HdSceneIndexPlugin overrides
+    HdSceneIndexBaseRefPtr _AppendSceneIndex(
+        const HdSceneIndexBaseRefPtr& inputScene,
+        const HdContainerDataSourceHandle& inputArgs) override;
 };
 
 PXR_NAMESPACE_CLOSE_SCOPE
