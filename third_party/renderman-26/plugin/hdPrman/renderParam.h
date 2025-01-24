@@ -22,6 +22,7 @@
 #if PXR_VERSION >= 2302
 #include "pxr/imaging/hd/retainedSceneIndex.h"
 #endif
+#include <tbb/concurrent_unordered_map.h>
 
 #include "Riley.h"
 #include "RixEventCallbacks.h"
@@ -594,16 +595,21 @@ private:
     RtParamList _renderSettingsPrimOptions;
 
     // Render terminals
+    // Since parallel sync is enabled for sample and display filters, filter 
+    // nodes may be addeed in parallel via AddSampleFilter/AddDisplayFilter.
+    using _PathToRileyFilterMap = 
+        tbb::concurrent_unordered_map<SdfPath, riley::ShadingNode, SdfPath::Hash>;
+
     SdfPath _renderSettingsIntegratorPath;
     HdMaterialNode2 _renderSettingsIntegratorNode;
     riley::IntegratorId _integratorId;
 
     SdfPathVector _connectedSampleFilterPaths;
-    std::map<SdfPath, riley::ShadingNode> _sampleFilterNodes;
+    _PathToRileyFilterMap _sampleFilterNodes;
     riley::SampleFilterId _sampleFiltersId;
 
     SdfPathVector _connectedDisplayFilterPaths;
-    std::map<SdfPath, riley::ShadingNode> _displayFilterNodes;
+    _PathToRileyFilterMap _displayFilterNodes;
     riley::DisplayFilterId _displayFiltersId;
     /// ------------------------------------------------------------------------
 
