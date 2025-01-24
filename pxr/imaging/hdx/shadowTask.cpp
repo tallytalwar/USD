@@ -277,6 +277,17 @@ void
 HdxShadowTask::Prepare(HdTaskContext* ctx,
                        HdRenderIndex* renderIndex)
 {
+    GlfSimpleLightingContextRefPtr lightingContext;
+    if (!_GetTaskContextData(ctx,
+            HdxTokens->lightingContext, &lightingContext)) {
+        return;
+    }
+
+    GlfSimpleShadowArrayRefPtr const shadows = lightingContext->GetShadows();
+    if (shadows->GetNumShadowMapPasses()) {
+        return;
+    }
+
     HdResourceRegistrySharedPtr resourceRegistry =
         renderIndex->GetResourceRegistry();
 
