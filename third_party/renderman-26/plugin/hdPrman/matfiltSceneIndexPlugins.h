@@ -9,6 +9,7 @@
 
 #include "pxr/pxr.h"
 #include "pxr/imaging/hd/sceneIndexPlugin.h"
+#include "pxr/imaging/hd/version.h"
 #include "hdPrman/api.h"
 
 PXR_NAMESPACE_OPEN_SCOPE
@@ -74,6 +75,7 @@ protected:
         const HdContainerDataSourceHandle &inputArgs) override;
 };
 
+#if HD_API_VERSION >= 76
 /// ----------------------------------------------------------------------------
 /// \class HdPrman_NodeIdentifierResolvingSceneIndexPlugin
 ///
@@ -93,6 +95,7 @@ protected: // HdSceneIndexPlugin overrides
         const HdSceneIndexBaseRefPtr& inputScene,
         const HdContainerDataSourceHandle& inputArgs) override;
 };
+#endif
 
 PXR_NAMESPACE_CLOSE_SCOPE
 

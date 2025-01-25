@@ -22,7 +22,9 @@
 #include "pxr/imaging/hd/materialNetworkInterface.h"
 #include "pxr/imaging/hd/retainedDataSource.h"
 #include "pxr/imaging/hd/sceneIndexPluginRegistry.h"
+#if HD_API_VERSION >= 76
 #include "pxr/imaging/hdsi/nodeIdentifierResolvingSceneIndex.h"
+#endif
 
 #include <string>
 #include <vector>
@@ -69,8 +71,10 @@ TF_REGISTRY_FUNCTION(TfType)
     HdSceneIndexPluginRegistry::Define<
         HdPrman_VirtualStructResolvingSceneIndexPlugin>();
 
+#if HD_API_VERSION >= 76
     HdSceneIndexPluginRegistry::Define<
         HdPrman_NodeIdentifierResolvingSceneIndexPlugin>();
+#endif
 }
 
 TF_REGISTRY_FUNCTION(HdSceneIndexPlugin)
@@ -273,6 +277,7 @@ HdPrman_VirtualStructResolvingSceneIndexPlugin::_AppendSceneIndex(
 
 /// ----------------------------------------------------------------------------
 
+#if HD_API_VERSION >= 76
 HdPrman_NodeIdentifierResolvingSceneIndexPlugin::
 HdPrman_NodeIdentifierResolvingSceneIndexPlugin() = default;
 
@@ -285,5 +290,6 @@ HdPrman_NodeIdentifierResolvingSceneIndexPlugin::_AppendSceneIndex(
     return HdSiNodeIdentifierResolvingSceneIndex::New(
                 inputScene, /* sourceType */_tokens->OSL);
 }
+#endif
 
 PXR_NAMESPACE_CLOSE_SCOPE
