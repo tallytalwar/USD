@@ -63,6 +63,12 @@ TF_DEFINE_PRIVATE_TOKENS(
     (MaterialXOrenNayarDiffuse)
     (ND_generalized_schlick_bsdf)
     (MaterialXGeneralizedSchlick)
+    (ND_burley_diffuse_bsdf)
+    (MaterialXBurleyDiffuse)
+    (ND_dielectric_bsdf)
+    (MaterialXDielectric)
+    (ND_sheen_bsdf)
+    (MaterialXSheen)
 
     // MaterialX - OSL Adapter Node names
     ((SS_Adapter, "StandardSurfaceParameters"))
@@ -276,6 +282,12 @@ _GetMaterialBsdfNodeType(TfToken const &hdNodeType)
         return _tokens->MaterialXOrenNayarDiffuse;
     } else if (hdNodeType == _tokens->ND_generalized_schlick_bsdf) {
         return _tokens->MaterialXGeneralizedSchlick;
+    } else if (hdNodeType == _tokens->ND_burley_diffuse_bsdf) {
+        return _tokens->MaterialXBurleyDiffuse;
+    } else if (hdNodeType == _tokens->ND_dielectric_bsdf) {
+        return _tokens->MaterialXDielectric;
+    } else if (hdNodeType == _tokens->ND_sheen_bsdf) {
+        return _tokens->MaterialXSheen;
     }
     return hdNodeType;
 }
@@ -820,7 +832,11 @@ _NodeHasTextureCoordPrimvar(
         // for texture coordinates. 
         auto geompropvalueNodes = nodegraph->getNodes(_tokens->geompropvalue);
         for (const mx::NodePtr& mxGeomPropNode : geompropvalueNodes) {
+#if MATERIALX_MAJOR_VERSION == 1 && MATERIALX_MINOR_VERSION <= 38
             if (mxGeomPropNode->getType() == mx::Type::VECTOR2->getName()) {
+#else
+            if (mxGeomPropNode->getType() == mx::Type::VECTOR2.getName()) {
+#endif
                 return true;
             }
         }
