@@ -284,7 +284,9 @@ HdxShadowTask::Prepare(HdTaskContext* ctx,
     }
 
     GlfSimpleShadowArrayRefPtr const shadows = lightingContext->GetShadows();
-    if (shadows->GetNumShadowMapPasses()) {
+    if (shadows->GetNumShadowMapPasses() == 0) {
+        // Bail if we are not generating shadow maps. We don't want to call
+        // Prepare on outdated AOV bindings.
         return;
     }
 
