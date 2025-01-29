@@ -638,15 +638,7 @@ HdxTaskController::_ShadowsEnabled() const
 bool
 HdxTaskController::_SelectionEnabled() const
 {
-    if (_renderTaskIds.empty())
-        return false;
-
-    const HdxRenderTaskParams& renderTaskParams =
-        _delegate.GetParameter<HdxRenderTaskParams>(
-            _renderTaskIds.front(), HdTokens->params);
-
-    // Disable selection highlighting when we're rendering ID buffers.
-    return !renderTaskParams.enableIdRender;
+    return !_renderTaskIds.empty();
 }
 
 bool
@@ -1462,11 +1454,8 @@ HdxTaskController::SetRenderParams(HdxRenderTaskParams const& params)
         mergedParams.resolveAovMultiSample = oldParams.resolveAovMultiSample;
 
         // We also explicitly manage blend params, based on the material tag.
-        // XXX: Note: if params.enableIdRender is set, we want to use default
-        // blend params so that we don't try to additive blend ID buffers...
         _SetBlendStateForMaterialTag(
-            params.enableIdRender ? TfToken() : collection.GetMaterialTag(),
-            &mergedParams);
+            collection.GetMaterialTag(), &mergedParams);
 
         if (mergedParams != oldParams) {
             _delegate.SetParameter(renderTaskId,

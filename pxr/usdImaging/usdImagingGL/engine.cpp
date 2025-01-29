@@ -1888,11 +1888,9 @@ UsdImagingGLEngine::_MakeHydraUsdImagingGLRenderParams(
         renderParams.drawMode == UsdImagingGLDrawMode::DRAW_POINTS) {
         params.enableLighting = false;
     } else {
-        params.enableLighting =  renderParams.enableLighting &&
-                                !renderParams.enableIdRender;
+        params.enableLighting =  renderParams.enableLighting;
     }
 
-    params.enableIdRender      = renderParams.enableIdRender;
     params.depthBiasUseDefault = true;
     params.depthFunc           = HdCmpFuncLess;
     params.cullStyle           = USD_2_HD_CULL_STYLE[
