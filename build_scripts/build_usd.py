@@ -1812,6 +1812,11 @@ def InstallUSD(context, force, buildArgs):
             else:
                 extraArgs.append('-DPXR_BUILD_OPENCOLORIO_PLUGIN=OFF')
 
+            if context.enableVulkan:
+                extraArgs.append('-DPXR_ENABLE_VULKAN_SUPPORT=ON')
+            else:
+                extraArgs.append('-DPXR_ENABLE_VULKAN_SUPPORT=OFF')
+
         else:
             extraArgs.append('-DPXR_BUILD_IMAGING=OFF')
 
@@ -1922,7 +1927,7 @@ errors may occur.
 - Embedded Build Targets
 When cross compiling for an embedded target operating system, e.g. iOS, the
 following components are disabled: python, tools, tests, examples, tutorials,
-opencolorio, openimageio, openvdb.
+opencolorio, openimageio, openvdb, vulkan.
 
 - Python Versions and DCC Plugins:
 Some DCCs may ship with and run using their own version of Python. In that case,
@@ -2163,6 +2168,11 @@ subgroup.add_argument("--zlib", dest="build_zlib",
 subgroup.add_argument("--no-zlib", dest="build_zlib",
                       action="store_false",
                       help="Do not install zlib for dependencies")
+subgroup = group.add_mutually_exclusive_group()
+subgroup.add_argument("--vulkan", dest="enable_vulkan", action="store_true",
+                      default=False, help="Enable Vulkan support")
+subgroup.add_argument("--no-vulkan", dest="enable_vulkan", action="store_false",
+                      help="Disable Vulkan support (default)")
 
 group = parser.add_argument_group(title="Imaging Plugin Options")
 subgroup = group.add_mutually_exclusive_group()
@@ -2376,6 +2386,9 @@ class InstallContext:
         self.enableOpenVDB = (self.buildImaging
                               and args.enable_openvdb
                               and not embedded)
+        self.enableVulkan = (self.buildImaging
+                              and args.enable_vulkan
+                              and not embedded)
 
         # - USD Imaging
         self.buildUsdImaging = (args.build_imaging == USD_IMAGING)
@@ -2516,6 +2529,12 @@ if context.buildOneTBB and context.buildEmbree:
     PrintError("Embree support cannot be enabled when building against oneTBB")
     sys.exit(1)
 
+# Error out if user enables Vulkan support but env var VULKAN_SDK is not set.
+if context.enableVulkan and not 'VULKAN_SDK' in os.environ:
+    PrintError("Vulkan support cannot be enabled when VULKAN_SDK environment "
+               "variable is not set")
+    sys.exit(1)
+
 # Error out if user explicitly enabled components which aren't
 # supported for embedded build targets.
 if MacOSTargetEmbedded(context):
@@ -2542,6 +2561,9 @@ if MacOSTargetEmbedded(context):
         sys.exit(1)
     if "--openvdb" in sys.argv:
         PrintError("Cannot build openvdb for embedded build targets")
+        sys.exit(1)
+    if "--vulkan" in sys.argv:
+        PrintError("Cannot build vulkan for embedded build targets")
         sys.exit(1)
 
 # Error out if user explicitly specified building usdview without required
@@ -2709,6 +2731,7 @@ summaryMsg += """\
       OpenImageIO support:      {buildOIIO} 
       OpenColorIO support:      {buildOCIO} 
       PRMan support:            {buildPrman}
+      Vulkan support:           {enableVulkan}
     UsdImaging                  {buildUsdImaging}
       usdview:                  {buildUsdview}
     MaterialX support           {buildMaterialX}
@@ -2781,6 +2804,7 @@ summaryMsg = summaryMsg.format(
     buildTests=("On" if context.buildTests else "Off"),
     buildExamples=("On" if context.buildExamples else "Off"),
     buildTutorials=("On" if context.buildTutorials else "Off"),
+    enableVulkan=("On" if context.enableVulkan else "Off"),
     buildTools=("On" if context.buildTools else "Off"),
     buildUsdValidation=("On" if context.buildUsdValidation else "Off"),
     buildAlembic=("On" if context.buildAlembic else "Off"),
