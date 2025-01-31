@@ -2428,11 +2428,8 @@ _ComputeRenderViewDesc(
                 VtDefault = TfToken());
 
         // Map renderVar to RenderMan AOV name and source.
-        // For LPE's, we use the name of the prim rather than the LPE,
-        // and include an "lpe:" prefix on the source.
-        const RtUString aovName( (sourceType == _tokens->lpe)
-            ? nameStr.c_str()
-            : sourceNameStr.c_str());
+        // In RenderMan, LPE sources are designated with an "lpe:" prefix.
+        const RtUString aovName( nameStr.c_str() );
         const RtUString sourceName( (sourceType == _tokens->lpe)
             ? ("lpe:" + sourceNameStr).c_str()
             : sourceNameStr.c_str());
@@ -2564,11 +2561,8 @@ _ComputeRenderViewDesc(
             renderVarIndex++;
 
             // Map renderVar to RenderMan AOV name and source.
-            // For LPE's, we use the name of the prim rather than the LPE,
-            // and include an "lpe:" prefix on the source.
-            std::string aovNameStr = (renderVar.sourceType == _tokens->lpe)
-                ? renderVar.varPath.GetName()
-                : renderVar.sourceName;
+            // In RenderMan, LPE sources are designated with an "lpe:" prefix.
+            std::string aovNameStr = renderVar.varPath.GetName();
             std::string sourceNameStr = (renderVar.sourceType == _tokens->lpe)
                 ? "lpe:" + renderVar.sourceName
                 : renderVar.sourceName;
