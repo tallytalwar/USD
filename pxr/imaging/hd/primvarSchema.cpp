@@ -34,7 +34,7 @@ TF_DEFINE_PUBLIC_TOKENS(HdPrimvarSchemaTokens,
 // --(BEGIN CUSTOM CODE: Schema Methods)--
 
 bool
-HdPrimvarSchema::IsIndexed()
+HdPrimvarSchema::IsIndexed() const
 {
     if (_container) {
         return (_container->Get(HdPrimvarSchemaTokens->
@@ -130,7 +130,7 @@ private:
 }
 
 HdSampledDataSourceHandle
-HdPrimvarSchema::GetPrimvarValue()
+HdPrimvarSchema::GetPrimvarValue() const
 {
     // overriden definition from primvarSchemaGetValue.template.cpp
     if (_container) {
@@ -156,7 +156,7 @@ HdPrimvarSchema::GetPrimvarValue()
 }
 
 HdSampledDataSourceHandle
-HdPrimvarSchema::GetIndexedPrimvarValue()
+HdPrimvarSchema::GetIndexedPrimvarValue() const
 {
     // overriden definition from primvarSchemaGetIndexedValue.template.cpp
     if (IsIndexed()) {
@@ -169,7 +169,7 @@ HdPrimvarSchema::GetIndexedPrimvarValue()
 }
 
 HdSampledDataSourceHandle
-HdPrimvarSchema::GetFlattenedPrimvarValue()
+HdPrimvarSchema::GetFlattenedPrimvarValue() const
 {
     if (!_container) {
         return nullptr;
