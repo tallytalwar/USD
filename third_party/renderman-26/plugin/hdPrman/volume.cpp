@@ -33,7 +33,8 @@ PXR_NAMESPACE_OPEN_SCOPE
 
 TF_DEFINE_PRIVATE_TOKENS(
     _tokens,
-    ((riPrefix, "ri:attributes:volume:"))
+    ((riAttrPrefix, "ri:attributes:volume:"))
+    ((riPrefix, "ri:volume:"))
     (density)
     (densityGrid)
     (densityMult)
@@ -271,15 +272,27 @@ bool _GetPrimvarValue(HdSceneDelegate *sceneDelegate,
 {
     float time;
     VtValue val;
+    // For now, support both the "ri:attributes:volume:" and
+    // "ri:volume:" namespaces.
     bool foundPrimvar = sceneDelegate->SamplePrimvar(
         id,
-        TfToken(_tokens->riPrefix.GetString() + name.GetString()),
+        TfToken(_tokens->riAttrPrefix.GetString() + name.GetString()),
         /*maxNumSamples*/ 1, &time, &val);
+    if(!foundPrimvar) {
+        foundPrimvar = sceneDelegate->SamplePrimvar(
+            id,
+            TfToken(_tokens->riPrefix.GetString() + name.GetString()),
+            /*maxNumSamples*/ 1, &time, &val);
+    }
     if(!foundPrimvar) {
         sceneDelegate->SamplePrimvar(id, name,
                                      /*maxNumSamples*/ 1, &time, &val);
     }
     if (foundPrimvar) {
+        // Allow implicit casting for registered cases such as double to float.
+        if (!val.IsHolding<T>() && val.CanCast<T>()) {
+            val = val.Cast<T>();
+        }
         if (val.IsHolding<T>()) {
             *value = val.UncheckedGet<T>();
             return true;
