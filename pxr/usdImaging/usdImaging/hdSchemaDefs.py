@@ -90,6 +90,7 @@
         MEMBERS = [
             ('materialPath', T_PATH, {}),
             ('bindingStrength', T_TOKEN, {}),
+            ('bindingOriginPath', T_PATH, {})
         ],
     ),
 
@@ -115,6 +116,7 @@
             ('collectionPath', T_PATH, {}),
             ('materialPath', T_PATH, {}),
             ('bindingStrength', T_TOKEN, {}),
+            ('bindingOriginPath', T_PATH, {})
         ],
     ),
 
