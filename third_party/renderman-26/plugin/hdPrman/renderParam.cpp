@@ -3647,6 +3647,7 @@ HdPrman_RenderParam::_CreateRileyDisplay(
         displayParams.SetString(RixStr.k_Ri_name, productName);
         displayParams.SetString(RixStr.k_Ri_type, productType);
         if(_framebuffer) {
+            std::lock_guard<std::mutex> lock(_framebuffer->mutex);
             static const RtUString us_bufferID("bufferID");
             displayParams.SetInteger(us_bufferID, _framebuffer->id);
         }
@@ -3868,10 +3869,10 @@ HdPrman_RenderParam::CreateFramebufferAndRenderViewFromAovs(
     // Stop render and crease sceneVersion to trigger restart.
     riley::Riley * riley = AcquireRiley();
 
-    std::lock_guard<std::mutex> lock(_framebuffer->mutex);
-
-    _framebuffer->pendingClear = true;
-
+    {
+        std::lock_guard<std::mutex> lock(_framebuffer->mutex);
+        _framebuffer->pendingClear = true;
+    }
     _lastBindings = aovBindings;
 
     // Displays & Display Channels
@@ -3931,9 +3932,15 @@ HdPrman_RenderParam::CreateFramebufferAndRenderViewFromAovs(
                 aovDescs.push_back(std::move(aovDesc));
             }
         }
-
-        _framebuffer->CreateAovBuffers(aovDescs);
-
+        {
+            std::lock_guard<std::mutex> lock(_framebuffer->mutex);
+            _framebuffer->CreateAovBuffers(aovDescs);
+        }
+        // RMAN-23141: We do NOT want to lock the following call to CreateRileyDisplay since the
+        // renderer might want to schedule this display call either immediately or defer to a later
+        // time. In the case, it wants to call the display API immediately, holding on to the
+        // framebuffer lock will cause issues in case the display API within this thread also wants
+        // to do the same.
         RtParamList displayParams;
         static const RtUString us_hydra("hydra");
         _CreateRileyDisplay(RixStr.k_framebuffer,
