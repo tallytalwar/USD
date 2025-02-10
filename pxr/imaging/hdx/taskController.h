@@ -153,7 +153,7 @@ public:
     /// -------------------------------------------------------
     /// Camera and Framing API
     
-    /// Set the size of the render buffers baking the AOVs.
+    /// Set the size of the render buffers backing the AOVs.
     /// GUI applications should set this to the size of the window.
     ///
     HDX_API
