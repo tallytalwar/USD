@@ -44,6 +44,7 @@
 #include "pxr/usd/sdr/shaderProperty.h"
 
 #include "pxr/base/arch/library.h"
+#include "pxr/base/arch/timing.h"
 #include "pxr/base/gf/vec2d.h"
 #include "pxr/base/gf/vec2f.h"
 #include "pxr/base/gf/vec2i.h"
@@ -120,6 +121,8 @@ PXR_NAMESPACE_OPEN_SCOPE
 TF_DEFINE_PRIVATE_TOKENS(
     _tokens,
     (percentDone)
+    (totalClockTime)
+    (renderProgressAnnotation)
     (PrimvarPass)
     (name)
     (sourceName)
@@ -209,6 +212,8 @@ HdPrman_RenderParam::HdPrman_RenderParam(
     _statsSession(nullptr),
     _progressPercent(0),
     _progressMode(0),
+    _startTime(0),
+    _stopTime(0),
     _riley(nullptr),
 #if PXR_VERSION >= 2302
     _statsSceneIndex(nullptr),
@@ -221,6 +226,7 @@ HdPrman_RenderParam::HdPrman_RenderParam(
     _displayFiltersId(riley::DisplayFilterId::InvalidId()),
     _lastLegacySettingsVersion(0),
     _resolution(0),
+    _resolutionStr(""),
     _displayFiltersDirty(false),
     _sampleFiltersDirty(false),
     _sampleFilterId(riley::SampleFilterId::InvalidId()),
@@ -234,6 +240,7 @@ HdPrman_RenderParam::HdPrman_RenderParam(
     _qnMinSamples(2),
     _qnInterval(4)
 {
+    _startTime = ArchGetTickTime();
 #if _PRMANAPI_VERSION_MAJOR_ < 26
     // Create the stats session
     _CreateStatsSession();
@@ -2704,6 +2711,15 @@ HdPrman_RenderParam::UpdateRenderStats(VtDictionary &stats)
     // the dictionary the progress value that comes from
     // the rix progress callback.
     stats[_tokens->percentDone.GetString()] = _progressPercent;
+    // Stop time gets set at end of _RenderThreadCallback
+    // after riley->Render returns. Until that happens, log the time so far.
+    stats[_tokens->totalClockTime.GetString()] = (_stopTime == 0) ?
+        ArchTicksToSeconds(ArchGetTickTime() - _startTime) :
+        ArchTicksToSeconds(_stopTime - _startTime);
+    // renderProgressAnnotation is how Solaris allows us to print in viewport.
+    // Use it to display the current resolution.
+    stats[_tokens->renderProgressAnnotation.GetString()] =
+        VtValue(_resolutionStr);
 }
 
 void
@@ -2780,6 +2796,9 @@ void
 HdPrman_RenderParam::SetResolution(GfVec2i const & resolution)
 {
     _resolution = resolution;
+    _resolutionStr = std::to_string(_resolution[0]);
+    _resolutionStr += " x ";
+    _resolutionStr += std::to_string(_resolution[1]);
 }
 
 void
@@ -3037,6 +3056,8 @@ HdPrman_RenderParam::_RenderThreadCallback()
         { static_cast<uint32_t>(TfArraySize(renderViewIds)),
           renderViewIds },
         renderOptions);
+
+    _stopTime = ArchGetTickTime();
 }
 
 void
@@ -3336,6 +3357,14 @@ HdPrman_RenderParam::StartRender()
     if (_statsSession)
     {
         _statsSession->RemoveOldMetricData();
+    }
+
+    // If render restarts without recreating delegate, start timing here.
+    // Otherwise, _startTime is set in HdPrman_RenderParam constructor,
+    // so that it includes time for creation of hydra prims.
+    if(_stopTime != 0) {
+        _stopTime = 0;
+        _startTime = ArchGetTickTime();
     }
 
     _renderThread->StartRender();
