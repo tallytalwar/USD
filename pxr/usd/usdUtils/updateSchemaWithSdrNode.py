@@ -382,14 +382,14 @@ def UpdateSchemaWithSdrNode(schemaLayer, sdrNode, renderContext="",
             HasConnectableAPI(usdSchemaReg.GetTypeFromName(schemaBase))
 
     emitSdrOutput = True
-    for outputName in sdrNode.GetOutputNames():
+    for outputName in sdrNode.GetShaderOutputNames():
         if PropertyDefiningKeys.USD_SUPPRESS_PROPERTY in \
-                sdrNode.GetOutput(outputName).GetMetadata():
+                sdrNode.GetShaderOutput(outputName).GetMetadata():
             emitSdrOutput = False
             break;
 
     if (emitSdrOutput and \
-        len(sdrNode.GetOutputNames()) > 0 and \
+        len(sdrNode.GetShaderOutputNames()) > 0 and \
         schemaPropertyNSPrefixOverride is not None and \
         not _IsNSPrefixConnectableAPICompliant( \
                 schemaPropertyNSPrefixOverride)):
@@ -397,7 +397,7 @@ def UpdateSchemaWithSdrNode(schemaLayer, sdrNode, renderContext="",
             "the presence of schemaPropertyNSPrefixOverride (\"%s\"), as it " \
             "is illegal for non-connectable nodes to contain output " \
             "parameters, or shader nodes' outputs to not have the \"outputs\"" \
-            "namespace prefix." %(len(sdrNode.GetOutputNames()), \
+            "namespace prefix." %(len(sdrNode.GetShaderOutputNames()), \
             schemaPropertyNSPrefixOverride))
 
     if (schemaBaseProvidesConnectability and \
@@ -476,14 +476,16 @@ def UpdateSchemaWithSdrNode(schemaLayer, sdrNode, renderContext="",
             usdSchemaReg.FindConcretePrimDefinition(typedSchemaForAttrPruning)
 
     # Create attrSpecs from input parameters
-    for propName in sdrNode.GetInputNames():
-        _CreateAttrSpecFromNodeAttribute(primSpec, sdrNode.GetInput(propName), 
+    for propName in sdrNode.GetShaderInputNames():
+        _CreateAttrSpecFromNodeAttribute(
+                primSpec, sdrNode.GetShaderInput(propName), 
                 primDefForAttrPruning, schemaPropertyNSPrefixOverride)
 
     # Create attrSpecs from output parameters
     # Note that we always want outputs: namespace prefix for output attributes.
-    for propName in sdrNode.GetOutputNames():
-        _CreateAttrSpecFromNodeAttribute(primSpec, sdrNode.GetOutput(propName), 
+    for propName in sdrNode.GetShaderOutputNames():
+        _CreateAttrSpecFromNodeAttribute(
+                primSpec, sdrNode.GetShaderOutput(propName), 
                 primDefForAttrPruning, UsdShade.Tokens.outputs[:-1], False)
 
     # Create token shaderId attrSpec -- only for shader nodes
