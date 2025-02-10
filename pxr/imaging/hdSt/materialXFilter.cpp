@@ -1505,7 +1505,7 @@ HdSt_ApplyMaterialXFilter(
             sdrRegistry.GetShaderNodeFromSourceCode(
                 glslfxSourceCode,
                 HioGlslfxTokens->glslfx,
-                NdrTokenMap()); // metadata
+                SdrTokenMap()); // metadata
         HdMaterialNode2 newTerminalNode;
         newTerminalNode.nodeTypeId = sdrNode->GetIdentifier();
         newTerminalNode.inputConnections = terminalNode.inputConnections;

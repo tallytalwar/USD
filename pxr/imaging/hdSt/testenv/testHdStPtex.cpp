@@ -106,7 +106,7 @@ My_TestGLDrawing::InitTest()
         shaderReg.GetShaderNodeFromSourceCode(
             shaderSource, 
             HioGlslfxTokens->glslfx,
-            NdrTokenMap()); // metadata
+            SdrTokenMap()); // metadata
 
     TfToken const& terminalType = HdMaterialTerminalTokens->surface;
 
