@@ -172,6 +172,8 @@ TF_DEFINE_ENV_SETTING(HD_PRMAN_DEFER_SET_OPTIONS, true,
                       "Defer first SetOptions call to render settings prim sync.");
 TF_DEFINE_ENV_SETTING(RMAN_XPU_GPUCONFIG, "0",
                       "A comma separated list of integers for which GPU devices to use.");
+TF_DEFINE_ENV_SETTING(HD_PRMAN_DISABLE_ADAPTIVE_SAMPLING, false,
+                      "Disable adaptive sampling.");
 
 // We now have two env setting related to driving hdPrman rendering using the
 // render settings prim. HD_PRMAN_RENDER_SETTINGS_DRIVE_RENDER_PASS ignores the
