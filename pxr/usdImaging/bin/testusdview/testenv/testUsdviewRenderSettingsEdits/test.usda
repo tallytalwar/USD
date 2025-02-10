@@ -147,9 +147,10 @@ def Scope "Render"
             </Render/Product>,
         ]
         int2 resolution = (512, 512)
+        bool ri:hider:jitter = 0
         int ri:hider:maxsamples = 4
         int ri:hider:minsamples = 4
-        float ri:Ri:PixelVariance = 0.01
+        float ri:Ri:PixelVariance = 0.0
         int ri:trace:maxdepth = 1
     }
 
