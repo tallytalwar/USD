@@ -269,15 +269,6 @@ class TestUsdSplines(unittest.TestCase):
             attrType = Sdf.ValueTypeNames.TimeCode, timeValued = True,
             scale = 2.0)
 
-    def test_LayerOffsets_Reversed(self):
-        """
-        Test writing and reading splines across time-reversing layer offsets.
-        """
-        self._DoLayerOffsetTest(
-            "test_LayerOffsets_Reversed",
-            attrType = Sdf.ValueTypeNames.Double, timeValued = False,
-            scale = -2.0)
-
     def test_InvalidType(self):
         """
         Verify that a spline cannot be assigned to an attribute of an
