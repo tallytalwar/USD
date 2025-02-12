@@ -9,9 +9,13 @@ pxr_library(usdSkelImaging
         usdSkel
 
     PUBLIC_CLASSES
+        animationAdapter
+        animationSchema
+        dataSourceAnimationPrim
+        package
         skeletonAdapter
         skelRootAdapter
-        package
+        tokens
         utils
 
     PUBLIC_HEADERS
