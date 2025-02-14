@@ -1423,8 +1423,7 @@ Interpolation
   :usda:`Mesh` primitive, a primitive can contain a single value to be held across
   the entire mesh, one value per-face, one value per-point to be interpolated
   either linearly or with the mesh's subdivision basis function, or one value per
-  face-vertex. For more information, see `Interpolation of Primitive
-  Variables. <api/class_usd_geom_primvar.html#Usd_InterpolationVals>`_
+  face-vertex. For more information, see :ref:`primvars`.
 
 .. _usdglossary-isaschema:
 
@@ -2303,7 +2302,7 @@ surface/volume of the primitive. In USD, you create and retrieve primvars using
 the :usdcpp:`UsdGeomImageable` schema, and interact with the special primvar
 encoding using the :usdcpp:`UsdGeomPrimvar` schema.
 
-There are two key aspects of Primvar identity:
+There are two key aspects of Primvars:
 
     * Primvars define a value that can vary across the primitive on which they
       are defined, via `prescribed interpolation rules
@@ -2311,11 +2310,15 @@ There are two key aspects of Primvar identity:
 
        ..
 
-    * Taken collectively on a prim, its Primvars describe the "per-primitive
-      overrides" to the shader(s) to which the prim is bound. Different
-      renderers may communicate the variables to the shaders using different
-      mechanisms over which Usd has no control; Primvars simply provide the
-      classification that any renderer should use to locate potential overrides.
+    * Taken collectively on a prim, its Primvars describe "per-primitive 
+      overrides" used to communicate variables to consumers, such as providing
+      providing joint influences for UsdSkel schemas, or shader variables for
+      renderers. In the shader use-case, different renderers may communicate the 
+      variables to the shaders using different mechanisms over which USD has no 
+      control; Primvars simply provide the classification that any renderer 
+      should use to locate potential overrides.
+
+For examples of primvars and primvar interpolation modes, see :ref:`primvars`.
 
 .. _usdglossary-property:
 
