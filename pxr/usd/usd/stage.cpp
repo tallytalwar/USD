@@ -9397,6 +9397,13 @@ bool
 UsdStage::_ValueMightBeTimeVaryingFromResolveInfo(const UsdResolveInfo &info,
                                                   const UsdAttribute &attr) const
 {
+    if (info._source == UsdResolveInfoSourceSpline) {
+        // Although a spline could represent a constant function, determining
+        // this would require analyzing the spline, which is potentially 
+        // expensive. Hence, all splines are deemed as possibly time varying.
+        return true;
+    }
+
     if (info._source == UsdResolveInfoSourceValueClips) {
         // Do a specialized check for value clips instead of falling through
         // to calling _GetNumTimeSamplesFromResolveInfo, which requires opening

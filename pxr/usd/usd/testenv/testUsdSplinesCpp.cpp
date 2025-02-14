@@ -114,8 +114,11 @@ _DoSerializationTest(
         const UsdPrim prim = stage->DefinePrim(SdfPath("/MyPrim"));
         UsdAttribute attr = prim.CreateAttribute(TfToken("myAttr"), attrType);
         TF_AXIOM(!attr.HasSpline());
+        TF_AXIOM(!attr.ValueMightBeTimeVarying());
         attr.SetSpline(spline);
         TF_AXIOM(attr.HasSpline());
+        // Having a spline makes this attr might be time varying.
+        TF_AXIOM(attr.ValueMightBeTimeVarying());
 
         stage->Save();
         stage->GetRootLayer()->Export(filename2);
@@ -158,7 +161,11 @@ _DoLayerOffsetTest(
 
     const UsdPrim prim = stage->DefinePrim(SdfPath("/MyPrim"));
     UsdAttribute attr = prim.CreateAttribute(TfToken("myAttr"), attrType);
+    TF_AXIOM(!attr.HasSpline());
+    TF_AXIOM(!attr.ValueMightBeTimeVarying());
     attr.SetSpline(spline);
+    TF_AXIOM(attr.HasSpline());
+    TF_AXIOM(attr.ValueMightBeTimeVarying());
 
     _TestSplineAndAttr(spline, attr);
 
@@ -362,10 +369,14 @@ TestInvalidType()
     const TsSpline spline = _GetTestSpline();
 
     TfErrorMark m;
+    TF_AXIOM(!attr.HasSpline());
     attr.SetSpline(spline);
+
     // A coding error should have been posted as String value splines are not
     // allowed. Only double, float or GfHalf!
     TF_AXIOM(!m.IsClean());
+    TF_AXIOM(!attr.HasSpline());
+    TF_AXIOM(!attr.ValueMightBeTimeVarying());
 }
 
 int main()

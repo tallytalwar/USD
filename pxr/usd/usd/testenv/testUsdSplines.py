@@ -53,8 +53,10 @@ class TestUsdSplines(unittest.TestCase):
             prim = stage.DefinePrim(Sdf.Path("/MyPrim"))
             attr = prim.CreateAttribute("myAttr", attrType)
             self.assertFalse(attr.HasSpline())
+            self.assertFalse(attr.ValueMightBeTimeVarying())
             attr.SetSpline(spline)
             self.assertTrue(attr.HasSpline())
+            self.assertTrue(attr.ValueMightBeTimeVarying())
             print(f"Original spline, {case}, {format}:")
             print(spline)
 
@@ -230,7 +232,11 @@ class TestUsdSplines(unittest.TestCase):
 
         prim = stage.DefinePrim(Sdf.Path("/MyPrim"))
         attr = prim.CreateAttribute("myAttr", attrType)
+        self.assertFalse(attr.HasSpline())
+        self.assertFalse(attr.ValueMightBeTimeVarying())
         attr.SetSpline(spline)
+        self.assertTrue(attr.HasSpline())
+        self.assertTrue(attr.ValueMightBeTimeVarying())
 
         sdfAttr = deepLayer.GetAttributeAtPath("/MyPrim.myAttr")
         sdfSpline = sdfAttr.GetInfo("spline")
@@ -283,6 +289,8 @@ class TestUsdSplines(unittest.TestCase):
         spline = self._GetTestSpline()
 
         gotException = False
+        self.assertFalse(attr.HasSpline())
+        self.assertFalse(attr.ValueMightBeTimeVarying())
         try:
             attr.SetSpline(spline)
         except Tf.ErrorException as e:
@@ -291,8 +299,9 @@ class TestUsdSplines(unittest.TestCase):
             print(e)
         except:
             pass
-
         self.assertTrue(gotException)
+        self.assertFalse(attr.HasSpline())
+        self.assertFalse(attr.ValueMightBeTimeVarying())
 
 
 if __name__ == "__main__":
