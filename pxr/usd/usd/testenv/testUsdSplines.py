@@ -71,7 +71,6 @@ class TestUsdSplines(unittest.TestCase):
                 spline2 = attr2.GetSpline()
                 print(f"Round-tripped spline, {case}, {format}:")
                 print(spline2)
-
                 self.assertEqual(spline, spline2)
 
     def test_Serialization_Empty(self):
@@ -240,6 +239,10 @@ class TestUsdSplines(unittest.TestCase):
 
         attr2 = stage.GetAttributeAtPath("/MyPrim.myAttr")
         spline2 = attr2.GetSpline()
+        print (f"Explicit spline eval, {case}:")
+        print (spline2.Eval(1.0))
+        print (f"Attribute Get spline eval, {case}:")
+        print (attr2.Get(1.0))
         print(f"Retrieved spline, {case}:")
         print(spline2)
 

@@ -481,6 +481,16 @@ pxr_build_test(testUsdUsdzBugGHSA01
         testenv/testUsdUsdzBugGHSA01.cpp
 )
 
+pxr_build_test(testUsdSplinesCpp
+    LIBRARIES
+        tf
+        ts
+        sdf
+        usd
+    CPPFILES
+        testenv/testUsdSplinesCpp.cpp
+)
+
 
 pxr_install_test_dir(
     SRC testenv/testUsdAppliedAPISchemas
@@ -1298,6 +1308,11 @@ pxr_register_test(testUsdTimeValueAuthoring
 
 pxr_register_test(testUsdTimeValueAuthoringCpp
     COMMAND "${CMAKE_INSTALL_PREFIX}/tests/testUsdTimeValueAuthoringCpp"
+    EXPECTED_RETURN_CODE 0
+)
+
+pxr_register_test(testUsdSplinesCpp
+    COMMAND "${CMAKE_INSTALL_PREFIX}/tests/testUsdSplinesCpp"
     EXPECTED_RETURN_CODE 0
 )
 

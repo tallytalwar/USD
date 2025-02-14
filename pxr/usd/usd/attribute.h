@@ -475,19 +475,25 @@ public:
     USD_API
     bool Set(const VtValue& value, UsdTimeCode time = UsdTimeCode::Default()) const;
 
-    /// IN DEVELOPMENT.
+    /// Returns true if the attribute has a spline as a value source.
+    ///
+    /// That is if a stronger default value is authored over weaker spline
+    /// value, the default value will hide the spline value and return false.
     USD_API
     bool HasSpline() const;
 
-    /// IN DEVELOPMENT.
+    /// Returns a copy of the spline.
+    ///
+    /// If a stronger default value is authored over weaker spline value, the
+    /// default value will hide the spline value.
     USD_API
     TsSpline GetSpline() const;
 
-    /// IN DEVELOPMENT.
+    /// Set the spline using the current edit target.
     USD_API
     bool SetSpline(const TsSpline &spline);
 
-    /// Clears the authored default value and all time samples for this
+    /// Clears the authored default value, all time samples and spline for this
     /// attribute at the current EditTarget and returns true on success.
     ///
     /// Calling clear when either no value is authored or no spec is present,
