@@ -11,7 +11,7 @@ Build Status
 ------------
 
 |         |   Status   |
-|:-------:|:---------:|:---------:|:---------:|
+|:-------:|:---------:|
 |   dev   | [![BuildUSD](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml/badge.svg?branch=dev)](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml) |
 |  release | [![BuildUSD](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml/badge.svg?branch=release)](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml) |
 
