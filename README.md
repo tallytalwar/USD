@@ -10,10 +10,10 @@ For more details, please visit the web site [here](http://openusd.org).
 Build Status
 ------------
 
-|         |   Linux   |  Windows  |   macOS   |
+|         |   Status   |
 |:-------:|:---------:|:---------:|:---------:|
-|   dev   | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=dev)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=dev) | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_windows.yml/badge.svg?branch=dev)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_windows.yml/badge.svg?branch=dev) | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=dev)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=dev) |
-|   release | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=release)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=release) | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_windows.yml/badge.svg?branch=release)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_windows.yml/badge.svg?branch=release) | [![Build Status](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=release)](https://github.com/tallytalwar/openusd/actions/workflows/buildusd_linux.yml/badge.svg?branch=release) |
+|   dev   | [![BuildUSD](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml/badge.svg?branch=dev)](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml) |
+|  release | [![BuildUSD](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml/badge.svg?branch=release)](https://github.com/PixarAnimationStudios/OpenUSD/actions/workflows/buildusd.yml) |
 
 Additional Documentation
 ------------------------
